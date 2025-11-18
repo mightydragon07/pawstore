@@ -1,7 +1,7 @@
 // components/CheckoutPage.jsx
 "use client";
 import React, { useState } from 'react';
-import { Package, CreditCard, CheckCircle, ArrowRight, User, MapPin, DollarSign, Truck, Lock } from 'lucide-react';
+import { Package, CreditCard, CheckCircle, ArrowRight, User, MapPin, DollarSign, Truck, Lock, HardDriveDownload } from 'lucide-react';
 
 export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) => {
   const [step, setStep] = useState(1);
@@ -18,7 +18,7 @@ export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) =>
     cardNumber: '',
     expiry: '',
     cvc: '',
-  });
+  }); 
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const taxRate = 0.08;

@@ -1,4 +1,4 @@
-// components/AnimatedBackground.jsx
+// components/AnimatedBackground.jsx - ENHANCED VERSION
 "use client";
 import React from 'react';
 
@@ -27,18 +27,18 @@ export const AnimatedBackground = () => {
       ></div>
 
       {/* Floating Paw Print Emojis with Shadow */}
-      {[...Array(25)].map((_, i) => (
+      {[...Array(30)].map((_, i) => (
         <div
           key={`paw-${i}`}
           className="absolute animate-paw-float"
           style={{
             left: `${Math.random() * 100}%`,
             bottom: '-100px',
-            animationDuration: `${12 + Math.random() * 12}s`,
-            animationDelay: `${Math.random() * 8}s`,
-            fontSize: `${50 + Math.random() * 40}px`,
-            filter: `drop-shadow(0 4px 12px rgba(59, 130, 246, 0.6))`,
-            opacity: 0.3,
+            animationDuration: `${10 + Math.random() * 15}s`,
+            animationDelay: `${Math.random() * 10}s`,
+            fontSize: `${45 + Math.random() * 50}px`,
+            filter: `drop-shadow(0 4px 15px rgba(59, 130, 246, ${0.4 + Math.random() * 0.4}))`,
+            opacity: 0.25 + Math.random() * 0.15,
             color: i % 3 === 0 ? '#3b82f6' : i % 3 === 1 ? '#60a5fa' : '#2563eb',
           }}
         >
@@ -46,21 +46,77 @@ export const AnimatedBackground = () => {
         </div>
       ))}
 
-      {/* Glowing Particles */}
-      {[...Array(40)].map((_, i) => (
+      {/* Enhanced Glowing Particles */}
+      {[...Array(60)].map((_, i) => (
         <div
           key={`star-${i}`}
-          className="absolute w-1 h-1 rounded-full bg-blue-400"
+          className="absolute rounded-full animate-twinkle"
           style={{
             top: `${Math.random() * 100}%`,
             left: `${Math.random() * 100}%`,
-            boxShadow: `0 0 ${5 + Math.random() * 10}px rgba(59, 130, 246, 0.8)`,
-            animation: `pulse ${2 + Math.random() * 3}s ease-in-out infinite`,
+            width: `${2 + Math.random() * 3}px`,
+            height: `${2 + Math.random() * 3}px`,
+            background: i % 2 === 0 ? '#3b82f6' : '#60a5fa',
+            boxShadow: `0 0 ${10 + Math.random() * 20}px ${i % 2 === 0 ? 'rgba(59, 130, 246, 0.8)' : 'rgba(96, 165, 250, 0.8)'}`,
             animationDelay: `${Math.random() * 5}s`,
-            opacity: 0.6,
+            animationDuration: `${2 + Math.random() * 4}s`,
           }}
         ></div>
       ))}
+
+      <style jsx>{`
+        @keyframes float-orb {
+          0%, 100% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.6;
+          }
+          25% {
+            transform: translate(50px, -50px) scale(1.1);
+            opacity: 0.8;
+          }
+          50% {
+            transform: translate(-30px, -100px) scale(0.9);
+            opacity: 0.5;
+          }
+          75% {
+            transform: translate(-80px, -30px) scale(1.05);
+            opacity: 0.7;
+          }
+        }
+
+        .animate-float-orb {
+          animation: float-orb ease-in-out infinite;
+        }
+
+        @keyframes gradient {
+          0%, 100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+        }
+
+        .animate-gradient {
+          background-size: 200% 200%;
+          animation: gradient 15s ease infinite;
+        }
+
+        @keyframes twinkle {
+          0%, 100% {
+            opacity: 0.3;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.5);
+          }
+        }
+
+        .animate-twinkle {
+          animation: twinkle ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 };

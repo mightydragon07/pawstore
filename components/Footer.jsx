@@ -1,4 +1,4 @@
-// components/Footer.jsx
+// components/Footer.jsx - COMPLETE WORKING VERSION
 "use client";
 import React from 'react';
 import { Mail, Phone, MapPin } from 'lucide-react';
@@ -6,34 +6,49 @@ import { Mail, Phone, MapPin } from 'lucide-react';
 export const Footer = ({ setCurrentPage }) => {
   const currentYear = new Date().getFullYear();
 
+  const handleNavigation = (page) => {
+    if (setCurrentPage) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const footerLinks = {
     company: [
-      { name: 'About Us', action: () => setCurrentPage('about') },
-      { name: 'Careers', action: () => alert('Careers page coming soon!') },
-      { name: 'Press', action: () => alert('Press page coming soon!') },
-      { name: 'Blog', action: () => alert('Blog coming soon!') },
+      { name: 'About Us', page: 'about' },
+      { name: 'Careers', page: null, message: 'Careers page coming soon!' },
+      { name: 'Press', page: null, message: 'Press page coming soon!' },
+      { name: 'Blog', page: null, message: 'Blog coming soon!' },
     ],
     support: [
-      { name: 'Help Center', action: () => setCurrentPage('support') },
-      { name: 'Contact Us', action: () => setCurrentPage('support') },
-      { name: 'Return Policy', action: () => setCurrentPage('support') },
-      { name: 'Warranty', action: () => setCurrentPage('support') },
+      { name: 'Help Center', page: 'support' },
+      { name: 'Contact Us', page: 'support' },
+      { name: 'Return Policy', page: 'support' },
+      { name: 'Warranty', page: 'support' },
     ],
     products: [
-      { name: 'Smart Feeders', action: () => setCurrentPage('products') },
-      { name: 'GPS Trackers', action: () => setCurrentPage('products') },
-      { name: 'Health Monitors', action: () => setCurrentPage('products') },
-      { name: 'Accessories', action: () => setCurrentPage('products') },
+      { name: 'Smart Feeders', page: 'products' },
+      { name: 'GPS Trackers', page: 'products' },
+      { name: 'Health Monitors', page: 'products' },
+      { name: 'Accessories', page: 'products' },
     ],
     legal: [
-      { name: 'Privacy Policy', action: () => alert('Privacy Policy - Coming Soon') },
-      { name: 'Terms of Service', action: () => alert('Terms of Service - Coming Soon') },
-      { name: 'Cookie Policy', action: () => alert('Cookie Policy - Coming Soon') },
+      { name: 'Privacy Policy', page: null, message: 'Privacy Policy - Coming Soon' },
+      { name: 'Terms of Service', page: null, message: 'Terms of Service - Coming Soon' },
+      { name: 'Cookie Policy', page: null, message: 'Cookie Policy - Coming Soon' },
     ],
   };
 
+  const handleLinkClick = (link) => {
+    if (link.page) {
+      handleNavigation(link.page);
+    } else if (link.message) {
+      alert(link.message);
+    }
+  };
+
   return (
-    <footer className="relative mt-20 bg-slate-900 border-t border-slate-800">
+    <footer className="mt-20 bg-slate-900 border-t border-slate-800">
       {/* Decorative Top Border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
 
@@ -76,50 +91,52 @@ export const Footer = ({ setCurrentPage }) => {
             </div>
           </div>
 
-          {/* Links Sections */}
+          {/* Company Links */}
           <div>
             <h3 className="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Company</h3>
             <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
-                  <a 
-                    href={link.href} 
-                    className="text-gray-400 hover:text-blue-400 transition-colors text-sm"
+                  <button 
+                    onClick={() => handleLinkClick(link)}
+                    className="text-gray-400 hover:text-blue-400 transition-colors text-sm text-left w-full"
                   >
                     {link.name}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* Support Links */}
           <div>
             <h3 className="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Support</h3>
             <ul className="space-y-2">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
-                  <a 
-                    href={link.href} 
-                    className="text-gray-400 hover:text-blue-400 transition-colors text-sm"
+                  <button 
+                    onClick={() => handleLinkClick(link)}
+                    className="text-gray-400 hover:text-blue-400 transition-colors text-sm text-left w-full"
                   >
                     {link.name}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* Products Links */}
           <div>
             <h3 className="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Products</h3>
             <ul className="space-y-2">
               {footerLinks.products.map((link) => (
                 <li key={link.name}>
-                  <a 
-                    href={link.href} 
-                    className="text-gray-400 hover:text-blue-400 transition-colors text-sm"
+                  <button 
+                    onClick={() => handleLinkClick(link)}
+                    className="text-gray-400 hover:text-blue-400 transition-colors text-sm text-left w-full"
                   >
                     {link.name}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -138,9 +155,12 @@ export const Footer = ({ setCurrentPage }) => {
             <div className="flex items-center space-x-4 text-xs text-gray-500">
               {footerLinks.legal.map((link, index) => (
                 <React.Fragment key={link.name}>
-                  <a href={link.href} className="hover:text-blue-400 transition-colors">
+                  <button 
+                    onClick={() => handleLinkClick(link)} 
+                    className="hover:text-blue-400 transition-colors"
+                  >
                     {link.name}
-                  </a>
+                  </button>
                   {index < footerLinks.legal.length - 1 && <span>•</span>}
                 </React.Fragment>
               ))}

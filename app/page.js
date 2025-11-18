@@ -1,4 +1,4 @@
-// app/page.js
+// app/page.js - FINAL COMPLETE VERSION
 "use client";
 import React, { useState, useEffect } from 'react';
 import { PRODUCTS } from '@/data/products';
@@ -12,12 +12,79 @@ import { CheckoutPage } from '@/components/CheckoutPage';
 import { OrdersPage } from '@/components/OrdersPage';
 import { ProfilePage } from '@/components/ProfilePage';
 import { WishlistPage } from '@/components/WishlistPage';
-import { AboutPage } from '@/components/AboutPage';
-import { SupportPage } from '@/components/SupportPage';
 import { CartModal } from '@/components/CartModal';
 import { AuthModal } from '@/components/AuthModal';
 import { Footer } from '@/components/Footer';
 import { Chatbox } from '@/components/Chatbox';
+
+// TEMPORARY About Page (replace with AboutPage component later)
+const AboutPage = () => (
+  <div className="min-h-screen py-12 flex items-center justify-center">
+    <div className="text-center max-w-2xl mx-auto px-4">
+      <h1 className="text-6xl font-bold text-white mb-6">About <span className="text-blue-500">SmartPaws</span></h1>
+      <p className="text-xl text-gray-400 mb-8">
+        We're revolutionizing pet care through innovative technology. SmartPaws combines AI, IoT sensors, 
+        and beautiful design to create products that keep your pets healthy, safe, and happy.
+      </p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
+          <div className="text-4xl font-bold text-blue-500 mb-2">50K+</div>
+          <div className="text-gray-400 text-sm">Happy Pets</div>
+        </div>
+        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
+          <div className="text-4xl font-bold text-blue-500 mb-2">4.9/5</div>
+          <div className="text-gray-400 text-sm">Rating</div>
+        </div>
+        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
+          <div className="text-4xl font-bold text-blue-500 mb-2">30+</div>
+          <div className="text-gray-400 text-sm">Products</div>
+        </div>
+        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
+          <div className="text-4xl font-bold text-blue-500 mb-2">24/7</div>
+          <div className="text-gray-400 text-sm">Support</div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// TEMPORARY Support Page (replace with SupportPage component later)
+const SupportPage = () => (
+  <div className="min-h-screen py-12 flex items-center justify-center">
+    <div className="text-center max-w-2xl mx-auto px-4">
+      <h1 className="text-6xl font-bold text-white mb-6">How Can We Help?</h1>
+      <p className="text-xl text-gray-400 mb-8">
+        Get support for your SmartPaws products or find answers to common questions
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
+          <div className="text-4xl mb-4">💬</div>
+          <h3 className="text-xl font-bold text-white mb-2">Live Chat</h3>
+          <p className="text-sm text-gray-400 mb-4">Available 24/7</p>
+          <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold">
+            Start Chat
+          </button>
+        </div>
+        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
+          <div className="text-4xl mb-4">📧</div>
+          <h3 className="text-xl font-bold text-white mb-2">Email</h3>
+          <p className="text-sm text-gray-400 mb-4">support@smartpaws.com</p>
+          <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold">
+            Send Email
+          </button>
+        </div>
+        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
+          <div className="text-4xl mb-4">📞</div>
+          <h3 className="text-xl font-bold text-white mb-2">Phone</h3>
+          <p className="text-sm text-gray-400 mb-4">1-800-SMART-PAW</p>
+          <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold">
+            Call Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -141,6 +208,10 @@ export default function Home() {
             products={PRODUCTS}
           />
         );
+      case 'about':
+        return <AboutPage />;
+      case 'support':
+        return <SupportPage />;
       default:
         return <Hero setCurrentPage={setCurrentPage} />;
     }
@@ -149,6 +220,7 @@ export default function Home() {
   return (
     <div className="min-h-screen text-white">
       <AnimatedBackground />
+      <CustomCursor />
       <Header
         cartCount={cartCount}
         wishlistCount={wishlist.length}
@@ -177,7 +249,7 @@ export default function Home() {
 
       <Chatbox />
 
-      <Footer />
+      <Footer setCurrentPage={setCurrentPage} />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-// components/CustomCursor.jsx
+// components/CustomCursor.jsx - CREATE THIS NEW FILE
 "use client";
 import React, { useEffect, useState } from 'react';
 
