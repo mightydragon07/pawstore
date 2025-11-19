@@ -1,7 +1,14 @@
-// components/AuthModal.jsx
+// components/AuthModal.jsx - WITH FIREBASE AUTHENTICATION
 "use client";
 import React, { useState } from 'react';
 import { X, User, Lock, Mail } from 'lucide-react';
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  signInWithPopup 
+} from 'firebase/auth';
+import { auth, googleProvider } from '@/lib/firebase';
+import { createUserDocument } from '@/lib/firebaseHelpers';
 
 export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,7 +19,7 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -21,49 +28,103 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
       return;
     }
 
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+
     setIsLoading(true);
     
-    // Mock Authentication Logic
-    setTimeout(() => {
+    try {
+      let userCredential;
+      
       if (isLogin) {
-        if (email === 'user@smartpaws.com' && password === 'password') {
-          onLogin({ 
-            email: email, 
-            name: 'Smart User',
-            photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80'
-          });
-          closeAuth();
-        } else {
-          setError('Invalid credentials. Try user@smartpaws.com / password');
-        }
+        // Sign In
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
       } else {
-        onLogin({ 
-          email: email, 
+        // Sign Up
+        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        
+        // Create user document in Firestore
+        await createUserDocument(userCredential.user.uid, {
+          email: userCredential.user.email,
           name: email.split('@')[0],
-          photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80'
+          createdAt: new Date().toISOString(),
         });
-        closeAuth();
       }
+
+      // Pass user data to parent
+      onLogin({
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        name: userCredential.user.displayName || email.split('@')[0],
+        photoURL: userCredential.user.photoURL,
+      });
+      
+      closeAuth();
+    } catch (error) {
+      console.error('Authentication error:', error);
+      
+      // User-friendly error messages
+      switch (error.code) {
+        case 'auth/user-not-found':
+          setError('No account found with this email.');
+          break;
+        case 'auth/wrong-password':
+          setError('Incorrect password.');
+          break;
+        case 'auth/email-already-in-use':
+          setError('Email already registered. Please sign in.');
+          break;
+        case 'auth/weak-password':
+          setError('Password should be at least 6 characters.');
+          break;
+        case 'auth/invalid-email':
+          setError('Invalid email address.');
+          break;
+        case 'auth/invalid-credential':
+          setError('Invalid email or password.');
+          break;
+        default:
+          setError('An error occurred. Please try again.');
+      }
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     setIsLoading(true);
     setError('');
     
-    // Mock Google Sign-In
-    setTimeout(() => {
-      const mockGoogleUser = {
-        email: 'user@gmail.com',
-        name: 'Google User',
-        photoURL: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&q=80'
-      };
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
       
-      onLogin(mockGoogleUser);
-      setIsLoading(false);
+      // Create/update user document
+      await createUserDocument(result.user.uid, {
+        email: result.user.email,
+        name: result.user.displayName,
+        photoURL: result.user.photoURL,
+      });
+
+      onLogin({
+        uid: result.user.uid,
+        email: result.user.email,
+        name: result.user.displayName,
+        photoURL: result.user.photoURL,
+      });
+      
       closeAuth();
-    }, 1500);
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      if (error.code === 'auth/popup-closed-by-user') {
+        setError('Sign-in cancelled.');
+      } else {
+        setError('Failed to sign in with Google. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -117,7 +178,7 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
             <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-400" />
             <input
               type="password"
-              placeholder="Password"
+              placeholder="Password (min 6 characters)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full py-3 pl-12 pr-4 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -186,15 +247,6 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
             {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
           </button>
         </div>
-
-        {/* Demo Credentials */}
-        {isLogin && (
-          <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl">
-            <p className="text-xs text-blue-300 text-center">
-              Demo: user@smartpaws.com / password
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

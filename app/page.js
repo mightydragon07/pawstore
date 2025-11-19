@@ -1,6 +1,18 @@
-// app/page.js - FINAL COMPLETE VERSION
+// app/page.js - WITH FIREBASE BACKEND
 "use client";
 import React, { useState, useEffect } from 'react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { 
+  saveCart, 
+  getCart, 
+  saveWishlist, 
+  getWishlist,
+  createOrder,
+  getUserOrders,
+  getAllProducts,
+  initializeProducts 
+} from '@/lib/firebaseHelpers';
 import { PRODUCTS } from '@/data/products';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { AnimatedBackground } from '@/components/AnimatedBackground';
@@ -17,7 +29,7 @@ import { AuthModal } from '@/components/AuthModal';
 import { Footer } from '@/components/Footer';
 import { Chatbox } from '@/components/Chatbox';
 
-// TEMPORARY About Page (replace with AboutPage component later)
+// TEMPORARY About Page
 const AboutPage = () => (
   <div className="min-h-screen py-12 flex items-center justify-center">
     <div className="text-center max-w-2xl mx-auto px-4">
@@ -48,7 +60,7 @@ const AboutPage = () => (
   </div>
 );
 
-// TEMPORARY Support Page (replace with SupportPage component later)
+// TEMPORARY Support Page
 const SupportPage = () => (
   <div className="min-h-screen py-12 flex items-center justify-center">
     <div className="text-center max-w-2xl mx-auto px-4">
@@ -90,38 +102,85 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState('home');
   const [cartItems, setCartItems] = useState([]);
   const [wishlist, setWishlist] = useState([]);
-  const [orders, setOrders] = useState([
-    {
-      id: 1,
-      date: '11/10/2025',
-      items: [
-        { id: 1, name: 'Smart Feeder Pro', price: 149, quantity: 1 },
-        { id: 2, name: 'GPS Pet Tracker', price: 99, quantity: 2 }
-      ],
-      total: 347,
-      status: 'Delivered'
-    },
-    {
-      id: 2,
-      date: '11/05/2025',
-      items: [
-        { id: 3, name: 'PetPace Smart Collar', price: 199, quantity: 1 }
-      ],
-      total: 199,
-      status: 'Shipped'
-    }
-  ]);
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState(PRODUCTS);
   const [user, setUser] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Listen to authentication state changes
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const userData = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
+          photoURL: firebaseUser.photoURL,
+        };
+        setUser(userData);
+
+        // Load user's cart, wishlist, and orders from Firebase
+        try {
+          const userCart = await getCart(firebaseUser.uid);
+          const userWishlist = await getWishlist(firebaseUser.uid);
+          const userOrders = await getUserOrders(firebaseUser.uid);
+          
+          setCartItems(userCart);
+          setWishlist(userWishlist);
+          setOrders(userOrders);
+        } catch (error) {
+          console.error('Error loading user data:', error);
+        }
+      } else {
+        setUser(null);
+        setCartItems([]);
+        setWishlist([]);
+        setOrders([]);
+      }
+      
       setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
+    });
+
+    return () => unsubscribe();
   }, []);
+
+  // Load products from Firebase (optional)
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const firebaseProducts = await getAllProducts();
+        if (firebaseProducts.length > 0) {
+          setProducts(firebaseProducts);
+        } else {
+          // Initialize products in Firebase if empty
+          console.log('Initializing products in Firebase...');
+          await initializeProducts(PRODUCTS);
+          setProducts(PRODUCTS);
+        }
+      } catch (error) {
+        console.error('Error loading products:', error);
+        setProducts(PRODUCTS);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  // Save cart to Firebase whenever it changes
+  useEffect(() => {
+    if (user && cartItems.length >= 0) {
+      saveCart(user.uid, cartItems).catch(console.error);
+    }
+  }, [cartItems, user]);
+
+  // Save wishlist to Firebase whenever it changes
+  useEffect(() => {
+    if (user && wishlist.length >= 0) {
+      saveWishlist(user.uid, wishlist).catch(console.error);
+    }
+  }, [wishlist, user]);
 
   const addToCart = (product) => {
     setCartItems(prev => {
@@ -151,10 +210,31 @@ export default function Home() {
     );
   };
 
-  const placeOrder = (order) => {
-    setOrders(prev => [order, ...prev]);
-    setCartItems([]);
-    setCurrentPage('orders');
+  const placeOrder = async (orderData) => {
+    if (!user) {
+      alert('Please sign in to place an order');
+      return;
+    }
+
+    try {
+      // Create order in Firebase
+      const orderId = await createOrder(user.uid, orderData);
+      
+      // Reload orders from Firebase
+      const updatedOrders = await getUserOrders(user.uid);
+      setOrders(updatedOrders);
+      
+      // Clear cart
+      setCartItems([]);
+      
+      // Navigate to orders page
+      setCurrentPage('orders');
+      
+      alert('Order placed successfully!');
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('Failed to place order. Please try again.');
+    }
   };
 
   const proceedToCheckout = () => {
@@ -164,6 +244,19 @@ export default function Home() {
     } else {
       setIsCartOpen(false);
       setCurrentPage('checkout');
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+      setCartItems([]);
+      setWishlist([]);
+      setOrders([]);
+      setCurrentPage('home');
+    } catch (error) {
+      console.error('Error signing out:', error);
     }
   };
 
@@ -180,7 +273,7 @@ export default function Home() {
       case 'products':
         return (
           <ProductsPage
-            products={PRODUCTS}
+            products={products}
             addToCart={addToCart}
             toggleWishlist={toggleWishlist}
             wishlist={wishlist}
@@ -198,14 +291,14 @@ export default function Home() {
       case 'orders':
         return <OrdersPage orders={orders} />;
       case 'profile':
-        return <ProfilePage user={user} logout={() => setUser(null)} setCurrentPage={setCurrentPage} />;
+        return <ProfilePage user={user} logout={handleLogout} setCurrentPage={setCurrentPage} />;
       case 'wishlist':
         return (
           <WishlistPage 
             wishlist={wishlist}
             addToCart={addToCart}
             toggleWishlist={toggleWishlist}
-            products={PRODUCTS}
+            products={products}
           />
         );
       case 'about':
