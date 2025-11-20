@@ -6,7 +6,7 @@ export const PRODUCTS = [
     name: "Smart Feeder Pro", 
     description: "AI-powered automatic feeder with portion control", 
     price: 149, 
-    image: "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500&q=80",
+    image: "https://images.unsplash.comhttps://www.catlitter.lk/_next/image?uhttps://m.media-amazon.com/images/I/619xaFSR6DL._AC_SL1500_.jpgrl=https%3A%2F%2Fcdn.greencloudpos.com%2Fcatlitter.lk%2Fproduct%2FSmart%2520Pet%2520Feeder%2520-1746699797994.png&w=3840&q=75/photo-1589924691995-400dc9ecc119?w=500&q=80",
     badge: "BEST SELLER", 
     features: ["AI Powered", "Schedule", "Portion Control"], 
     reviews: 2847, 

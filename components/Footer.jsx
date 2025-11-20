@@ -74,19 +74,19 @@ export const Footer = ({ setCurrentPage }) => {
                 <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
                   <Mail className="w-4 h-4 text-blue-500" />
                 </div>
-                <span>support@smartpaws.com</span>
+                <span>smartpaws@gmail.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
                   <Phone className="w-4 h-4 text-blue-500" />
                 </div>
-                <span>1-800-SMART-PAW</span>
+                <span>09123456789</span>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
                   <MapPin className="w-4 h-4 text-blue-500" />
                 </div>
-                <span>San Francisco, CA</span>
+                <span>Colombo, Sri Lanka</span>
               </div>
             </div>
           </div>
