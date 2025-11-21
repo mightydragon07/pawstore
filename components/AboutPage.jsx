@@ -7,7 +7,7 @@ export const AboutPage = () => {
     {
       icon: Zap,
       title: 'Cutting-Edge Technology',
-      description: 'We use the latest AI and IoT innovations to create smart devices that truly understand your pet\'s needs.',
+      description: 'We deploy the latest IoT sensors to build devices that don\'t just work—they learn, optimize, and connect your entire pet care routine.',
     },
     {
       icon: Heart,
@@ -27,9 +27,9 @@ export const AboutPage = () => {
   ];
 
   const stats = [
-    { number: '50K+', label: 'Happy Pets' },
+    { number: '1K+', label: 'Happy Pets' },
     { number: '4.9/5', label: 'Customer Rating' },
-    { number: '30+', label: 'Smart Products' },
+    { number: '10+', label: 'Smart Products' },
     { number: '24/7', label: 'Support' },
   ];
 
@@ -42,9 +42,7 @@ export const AboutPage = () => {
             About <span className="text-blue-500">SmartPaws</span>
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            We're on a mission to revolutionize pet care through innovative technology. 
-            SmartPaws combines artificial intelligence, IoT sensors, and beautiful design 
-            to create products that keep your pets healthy, safe, and happy.
+            SmartPaws is where innovation meets affection. We leverage powerful technology and IoT sensors with intuitive, beautiful design, giving you the peace of mind that your pet's health and happiness are always taken care of.
           </p>
         </div>
 
@@ -67,21 +65,10 @@ export const AboutPage = () => {
             <h2 className="text-4xl font-bold text-white mb-6">Our Story</h2>
             <div className="space-y-4 text-gray-300 leading-relaxed">
               <p>
-                SmartPaws was founded in 2020 by a team of pet lovers, engineers, and designers 
-                who believed that our furry friends deserved better. After experiencing the anxiety 
-                of leaving pets home alone and the challenges of maintaining their health, we knew 
-                there had to be a better way.
+                SmartPaws began in 2025 with a clear vision: Elevate pet care. Founded by pet owners, engineers, and designers, we were motivated by the need to conquer the anxiety of separation and the challenges of pet wellness.
               </p>
               <p>
-                We started with a simple smart feeder and quickly realized the potential of 
-                combining AI, sensors, and mobile connectivity to transform pet care. Today, 
-                SmartPaws offers a complete ecosystem of products that work together seamlessly 
-                to give you peace of mind and give your pets the care they deserve.
-              </p>
-              <p>
-                Our products have helped over 50,000 pet parents monitor their pets' health, 
-                track their location, maintain feeding schedules, and stay connected even when 
-                they're miles apart. But we're just getting started.
+                We built the foundation with smart feeding technology, evolving quickly into a seamless ecosystem. By integrating IoT and mobile connectivity, SmartPaws gives over 50,000 pet parents the power to monitor health, manage schedules, and stay connected effortlessly. The future of pet care is now.
               </p>
             </div>
           </div>
