@@ -1,14 +1,15 @@
-// components/AuthModal.jsx - WITH FIREBASE AUTHENTICATION
+// components/AuthModal.jsx - WITH FIREBASE AUTHENTICATION AND EMAIL VERIFICATION
 "use client";
 import React, { useState } from 'react';
 import { X, User, Lock, Mail } from 'lucide-react';
 import { 
   signInWithEmailAndPassword, 
+  sendEmailVerification,
   createUserWithEmailAndPassword,
-  signInWithPopup 
-} from 'firebase/auth';
+  signInWithPopup,
+  reload 
+} from 'firebase/auth'; // Added 'reload' for checking email verification status
 import { auth, googleProvider } from '@/lib/firebase';
-import { createUserDocument } from '@/lib/firebaseHelpers';
 
 export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,6 +17,8 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  // State for tracking if a verification email has been sent in the current session
+  const [verificationSent, setVerificationSent] = useState(false); 
 
   if (!isOpen) return null;
 
@@ -39,29 +42,73 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
       let userCredential;
       
       if (isLogin) {
-        // Sign In
+        // --- 1. Sign In Logic with Email Verification Check ---
         userCredential = await signInWithEmailAndPassword(auth, email, password);
-      } else {
-        // Sign Up
-        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Force a reload to get the latest emailVerified status
+        await reload(user);
         
-        // Create user document in Firestore
-        await createUserDocument(userCredential.user.uid, {
-          email: userCredential.user.email,
-          name: email.split('@')[0],
-          createdAt: new Date().toISOString(),
-        });
+        if (user.emailVerified) {
+          // User is signed in and email is verified
+          onLogin({
+            uid: user.uid,
+            email: user.email,
+            name: user.displayName || email.split('@')[0],
+            photoURL: user.photoURL,
+          });
+          closeAuth();
+        } else {
+          // User is signed in but email is NOT verified
+          setError('Please verify your email address to sign in. A verification link was sent upon registration.');
+          
+          // Optionally allow the user to resend the verification email
+          if (!verificationSent) {
+            await sendEmailVerification(user);
+            setVerificationSent(true);
+            setError('Please verify your email address to sign in. A new verification link has been sent.');
+          }
+          // The sign-in was technically successful, but we prevent closing the modal and set an error
+          // to prompt the user to verify. The user state is still logged in *client-side* until they log out 
+          // or refresh, but they cannot proceed with the app flow.
+          auth.signOut(); // Log out the unverified user for security/clarity
+        }
+      } else {
+        // --- 2. Sign Up Logic with Email Verification Send ---
+        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Send email verification right after account creation
+        await sendEmailVerification(user);
+        setVerificationSent(true);
+
+        // Create user document via server API
+        try {
+          const token = await user.getIdToken();
+          await fetch(`/api/users/${user.uid}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({
+              email: user.email,
+              name: email.split('@')[0],
+              createdAt: new Date().toISOString(),
+            }),
+          });
+        } catch (err) {
+          console.error('Failed to create user document via API:', err);
+        }
+
+        // Log out the user immediately after sign-up to enforce verification on next login
+        await auth.signOut();
+
+        // Inform the user to check their email
+        setError('Account created successfully! Please check your email inbox to **verify your address** before signing in.');
+        setIsLogin(true); // Switch to login view for next step
+        setEmail(user.email); // Keep email pre-filled
+        setPassword(''); // Clear password
       }
 
-      // Pass user data to parent
-      onLogin({
-        uid: userCredential.user.uid,
-        email: userCredential.user.email,
-        name: userCredential.user.displayName || email.split('@')[0],
-        photoURL: userCredential.user.photoURL,
-      });
       
-      closeAuth();
     } catch (error) {
       console.error('Authentication error:', error);
       
@@ -94,18 +141,29 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
   };
 
   const handleGoogleSignIn = async () => {
+    // Google sign-in handles verification automatically for Google accounts, 
+    // so no changes are strictly needed here.
     setIsLoading(true);
     setError('');
     
     try {
       const result = await signInWithPopup(auth, googleProvider);
       
-      // Create/update user document
-      await createUserDocument(result.user.uid, {
-        email: result.user.email,
-        name: result.user.displayName,
-        photoURL: result.user.photoURL,
-      });
+      // Create/update user document via server API
+      try {
+        const token = await result.user.getIdToken();
+        await fetch(`/api/users/${result.user.uid}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({
+            email: result.user.email,
+            name: result.user.displayName,
+            photoURL: result.user.photoURL,
+          }),
+        });
+      } catch (err) {
+        console.error('Failed to create/update user via API:', err);
+      }
 
       onLogin({
         uid: result.user.uid,
@@ -241,6 +299,7 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
               setError(''); 
               setEmail('');
               setPassword('');
+              setVerificationSent(false); // Reset on toggle
             }}
             className="text-sm text-gray-400 hover:text-blue-400 transition-colors"
           >

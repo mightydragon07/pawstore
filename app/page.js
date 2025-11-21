@@ -3,17 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { 
-  saveCart, 
-  getCart, 
-  saveWishlist, 
-  getWishlist,
-  createOrder,
-  getUserOrders,
-  getAllProducts,
-  initializeProducts 
-} from '@/lib/firebaseHelpers';
 import { PRODUCTS } from '@/data/products';
+import { AboutPage } from '@/components/AboutPage';
+import { SupportPage } from '@/components/SupportPage';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { AnimatedBackground } from '@/components/AnimatedBackground';
 import { CustomCursor } from '@/components/CustomCursor';
@@ -29,74 +21,8 @@ import { AuthModal } from '@/components/AuthModal';
 import { Footer } from '@/components/Footer';
 import { Chatbox } from '@/components/Chatbox';
 
-// TEMPORARY About Page
-const AboutPage = () => (
-  <div className="min-h-screen py-12 flex items-center justify-center">
-    <div className="text-center max-w-2xl mx-auto px-4">
-      <h1 className="text-6xl font-bold text-white mb-6">About <span className="text-blue-500">SmartPaws</span></h1>
-      <p className="text-xl text-gray-400 mb-8">
-        We're revolutionizing pet care through innovative technology. SmartPaws combines AI, IoT sensors, 
-        and beautiful design to create products that keep your pets healthy, safe, and happy.
-      </p>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
-          <div className="text-4xl font-bold text-blue-500 mb-2">50K+</div>
-          <div className="text-gray-400 text-sm">Happy Pets</div>
-        </div>
-        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
-          <div className="text-4xl font-bold text-blue-500 mb-2">4.9/5</div>
-          <div className="text-gray-400 text-sm">Rating</div>
-        </div>
-        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
-          <div className="text-4xl font-bold text-blue-500 mb-2">30+</div>
-          <div className="text-gray-400 text-sm">Products</div>
-        </div>
-        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
-          <div className="text-4xl font-bold text-blue-500 mb-2">24/7</div>
-          <div className="text-gray-400 text-sm">Support</div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
-// TEMPORARY Support Page
-const SupportPage = () => (
-  <div className="min-h-screen py-12 flex items-center justify-center">
-    <div className="text-center max-w-2xl mx-auto px-4">
-      <h1 className="text-6xl font-bold text-white mb-6">How Can We Help?</h1>
-      <p className="text-xl text-gray-400 mb-8">
-        Get support for your SmartPaws products or find answers to common questions
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
-          <div className="text-4xl mb-4">💬</div>
-          <h3 className="text-xl font-bold text-white mb-2">Live Chat</h3>
-          <p className="text-sm text-gray-400 mb-4">Available 24/7</p>
-          <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold">
-            Start Chat
-          </button>
-        </div>
-        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
-          <div className="text-4xl mb-4">📧</div>
-          <h3 className="text-xl font-bold text-white mb-2">Email</h3>
-          <p className="text-sm text-gray-400 mb-4">support@smartpaws.com</p>
-          <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold">
-            Send Email
-          </button>
-        </div>
-        <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700">
-          <div className="text-4xl mb-4">📞</div>
-          <h3 className="text-xl font-bold text-white mb-2">Phone</h3>
-          <p className="text-sm text-gray-400 mb-4">1-800-SMART-PAW</p>
-          <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold">
-            Call Now
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-);
+
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -121,15 +47,23 @@ export default function Home() {
         };
         setUser(userData);
 
-        // Load user's cart, wishlist, and orders from Firebase
+        // Load user's cart, wishlist, and orders from server APIs
         try {
-          const userCart = await getCart(firebaseUser.uid);
-          const userWishlist = await getWishlist(firebaseUser.uid);
-          const userOrders = await getUserOrders(firebaseUser.uid);
-          
-          setCartItems(userCart);
-          setWishlist(userWishlist);
-          setOrders(userOrders);
+          const idToken = await firebaseUser.getIdToken();
+
+          const [cartRes, wishlistRes, ordersRes] = await Promise.all([
+            fetch(`/api/cart/${firebaseUser.uid}`, { headers: { Authorization: `Bearer ${idToken}` } }),
+            fetch(`/api/wishlist/${firebaseUser.uid}`, { headers: { Authorization: `Bearer ${idToken}` } }),
+            fetch(`/api/orders?userId=${firebaseUser.uid}`, { headers: { Authorization: `Bearer ${idToken}` } }),
+          ]);
+
+          const cartJson = await cartRes.json();
+          const wishlistJson = await wishlistRes.json();
+          const ordersJson = await ordersRes.json();
+
+          setCartItems(cartJson.items || []);
+          setWishlist(wishlistJson.items || []);
+          setOrders(ordersJson.orders || []);
         } catch (error) {
           console.error('Error loading user data:', error);
         }
@@ -150,13 +84,14 @@ export default function Home() {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const firebaseProducts = await getAllProducts();
+        const res = await fetch('/api/products');
+        const json = await res.json();
+        const firebaseProducts = json.products || [];
         if (firebaseProducts.length > 0) {
           setProducts(firebaseProducts);
         } else {
-          // Initialize products in Firebase if empty
-          console.log('Initializing products in Firebase...');
-          await initializeProducts(PRODUCTS);
+          // Leave local product list as fallback; server-side initialization is admin-only
+          console.log('No products in Firebase, using local product list');
           setProducts(PRODUCTS);
         }
       } catch (error) {
@@ -171,14 +106,36 @@ export default function Home() {
   // Save cart to Firebase whenever it changes
   useEffect(() => {
     if (user && cartItems.length >= 0) {
-      saveCart(user.uid, cartItems).catch(console.error);
+      (async () => {
+        try {
+          const token = await auth.currentUser.getIdToken();
+          await fetch(`/api/cart/${user.uid}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ items: cartItems }),
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      })();
     }
   }, [cartItems, user]);
 
   // Save wishlist to Firebase whenever it changes
   useEffect(() => {
     if (user && wishlist.length >= 0) {
-      saveWishlist(user.uid, wishlist).catch(console.error);
+      (async () => {
+        try {
+          const token = await auth.currentUser.getIdToken();
+          await fetch(`/api/wishlist/${user.uid}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ items: wishlist }),
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      })();
     }
   }, [wishlist, user]);
 
@@ -217,12 +174,19 @@ export default function Home() {
     }
 
     try {
-      // Create order in Firebase
-      const orderId = await createOrder(user.uid, orderData);
-      
-      // Reload orders from Firebase
-      const updatedOrders = await getUserOrders(user.uid);
-      setOrders(updatedOrders);
+      const token = await auth.currentUser.getIdToken();
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ userId: user.uid, orderData }),
+      });
+      const json = await res.json();
+      const orderId = json.id;
+
+      // Reload orders from server
+      const ordersRes = await fetch(`/api/orders?userId=${user.uid}`, { headers: { Authorization: `Bearer ${token}` } });
+      const ordersJson = await ordersRes.json();
+      setOrders(ordersJson.orders || []);
       
       // Clear cart
       setCartItems([]);
