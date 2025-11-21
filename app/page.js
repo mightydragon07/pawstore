@@ -34,6 +34,10 @@ export default function Home() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  // Ensure the loading screen is visible for at least a minimum duration
+  const [authReady, setAuthReady] = useState(false);
+  const [minLoadingDone, setMinLoadingDone] = useState(false);
+  const MIN_LOADING_MS = 3000; // extend viewing time (ms)
 
   // Listen to authentication state changes
   useEffect(() => {
@@ -73,8 +77,9 @@ export default function Home() {
         setWishlist([]);
         setOrders([]);
       }
-      
-      setIsLoading(false);
+      // mark auth work as finished; actual hiding of the loading
+      // screen will wait until the minimum display time has passed
+      setAuthReady(true);
     });
 
     return () => unsubscribe();
@@ -102,6 +107,19 @@ export default function Home() {
 
     loadProducts();
   }, []);
+
+  // Minimum loading timer - keep loading screen visible for at least MIN_LOADING_MS
+  useEffect(() => {
+    const timer = setTimeout(() => setMinLoadingDone(true), MIN_LOADING_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // When both auth initialization and minimum loading time are done, hide the loading screen
+  useEffect(() => {
+    if (authReady && minLoadingDone) {
+      setIsLoading(false);
+    }
+  }, [authReady, minLoadingDone]);
 
   // Save cart to Firebase whenever it changes
   useEffect(() => {
