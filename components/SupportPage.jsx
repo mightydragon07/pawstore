@@ -7,10 +7,6 @@ export const SupportPage = () => {
 
   const faqs = [
     {
-      question: 'How do I set up my smart feeder?',
-      answer: 'Download the SmartPaws app, create an account, and follow the in-app setup wizard. Connect your feeder to WiFi, pair it with the app, and you\'re ready to schedule feeding times!'
-    },
-    {
       question: 'What if my GPS tracker loses signal?',
       answer: 'Our GPS trackers store the last known location. Once signal is restored, tracking resumes automatically. The device also has a built-in backup battery that lasts up to 5 days.'
     },
@@ -51,14 +47,14 @@ export const SupportPage = () => {
     {
       icon: Mail,
       title: 'Email Support',
-      description: 'support@smartpaws.com',
+      description: 'smartpaws@gmail.com',
       action: 'Send Email',
       available: 'Response in 2-4 hours',
     },
     {
       icon: Phone,
       title: 'Phone Support',
-      description: '1-800-SMART-PAW',
+      description: '091-234-5678',
       action: 'Call Now',
       available: 'Mon-Fri 9AM-6PM EST',
     },
@@ -80,18 +76,6 @@ export const SupportPage = () => {
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
             Get support for your SmartPaws products or find answers to common questions
           </p>
-        </div>
-
-        {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-16">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search for help articles..."
-              className="w-full py-4 pl-12 pr-4 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
         </div>
 
         {/* Contact Methods */}

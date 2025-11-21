@@ -7,11 +7,8 @@ export const ProfilePage = ({ user, logout, setCurrentPage }) => {
   const [profile, setProfile] = useState({
     name: user?.name || 'Smart User',
     email: user?.email || 'user@smartpaws.com',
-    phone: '+1 (555) 123-4567',
-    address: '123 Smart Pet Lane, Techville, CA 90210',
-    petName: 'Max',
-    petType: 'Golden Retriever',
-    petAge: '3 years',
+    phone: user?.phone || '',
+    address: user?.address || '',
   });
 
   const handleSave = () => {
@@ -108,7 +105,14 @@ export const ProfilePage = ({ user, logout, setCurrentPage }) => {
                         className="w-full py-2 px-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (
-                      <p className="text-white font-medium text-lg">{profile.phone}</p>
+                      profile.phone ? (
+                        <p className="text-white font-medium text-lg">{profile.phone}</p>
+                      ) : (
+                        <div className="flex items-center space-x-3">
+                          <p className="text-gray-400 text-sm">No phone added</p>
+                          <button onClick={() => setIsEditing(true)} className="text-blue-400 text-sm underline">Add</button>
+                        </div>
+                      )
                     )}
                   </div>
 
@@ -126,7 +130,14 @@ export const ProfilePage = ({ user, logout, setCurrentPage }) => {
                         className="w-full py-2 px-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     ) : (
-                      <p className="text-white font-medium text-lg">{profile.address}</p>
+                      profile.address ? (
+                        <p className="text-white font-medium text-lg">{profile.address}</p>
+                      ) : (
+                        <div className="flex items-center space-x-3">
+                          <p className="text-gray-400 text-sm">No address added</p>
+                          <button onClick={() => setIsEditing(true)} className="text-blue-400 text-sm underline">Add</button>
+                        </div>
+                      )
                     )}
                   </div>
                 </div>
@@ -134,57 +145,6 @@ export const ProfilePage = ({ user, logout, setCurrentPage }) => {
             </div>
           </div>
 
-          {/* Pet Information Card */}
-          <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8">
-            <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
-              <span className="text-3xl mr-3">🐕</span>
-              Pet Information
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="text-sm font-medium text-gray-400 mb-2 block">Pet Name</label>
-                {isEditing ? (
-                  <input 
-                    type="text" 
-                    value={profile.petName}
-                    onChange={(e) => setProfile({...profile, petName: e.target.value})}
-                    className="w-full py-2 px-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : (
-                  <p className="text-white font-medium text-lg">{profile.petName}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-400 mb-2 block">Type/Breed</label>
-                {isEditing ? (
-                  <input 
-                    type="text" 
-                    value={profile.petType}
-                    onChange={(e) => setProfile({...profile, petType: e.target.value})}
-                    className="w-full py-2 px-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : (
-                  <p className="text-white font-medium text-lg">{profile.petType}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-400 mb-2 block">Age</label>
-                {isEditing ? (
-                  <input 
-                    type="text" 
-                    value={profile.petAge}
-                    onChange={(e) => setProfile({...profile, petAge: e.target.value})}
-                    className="w-full py-2 px-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : (
-                  <p className="text-white font-medium text-lg">{profile.petAge}</p>
-                )}
-              </div>
-            </div>
-          </div>
 
           {/* Action Buttons */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
