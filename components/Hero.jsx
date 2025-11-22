@@ -57,7 +57,7 @@ export const Hero = ({ setCurrentPage }) => {
           </div>
 
           {/* Main Heading */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight hero-font">
             Where Intelligence
             <br />
             <span className="text-blue-500">Meets Affection</span>
