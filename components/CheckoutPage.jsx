@@ -1,4 +1,3 @@
-// components/CheckoutPage.jsx
 "use client";
 import React, { useState } from 'react';
 import { Package, CreditCard, CheckCircle, ArrowRight, User, MapPin, DollarSign, Truck, Lock, HardDriveDownload } from 'lucide-react';

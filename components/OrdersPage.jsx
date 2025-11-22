@@ -1,4 +1,3 @@
-// components/OrdersPage.jsx
 import React, { useState } from 'react';
 import { Package, Truck, CheckCircle, Clock, ChevronDown, MapPin } from 'lucide-react';
 

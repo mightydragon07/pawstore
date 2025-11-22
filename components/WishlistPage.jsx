@@ -1,4 +1,3 @@
-// components/WishlistPage.jsx
 import React from 'react';
 import { Heart, ShoppingCart, Trash2, Star } from 'lucide-react';
 

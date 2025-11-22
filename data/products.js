@@ -1,11 +1,9 @@
-// data/products.js
 export const PRODUCTS = [
-  // Original Products (8)
   { 
     id: 1, 
     name: "Smart Feeder Pro", 
     description: "AI-powered automatic feeder with portion control", 
-    price: 149, 
+    price: 49, 
     image: "https://images.unsplash.comhttps://www.catlitter.lk/_next/image?uhttps://m.media-amazon.com/images/I/619xaFSR6DL._AC_SL1500_.jpgrl=https%3A%2F%2Fcdn.greencloudpos.com%2Fcatlitter.lk%2Fproduct%2FSmart%2520Pet%2520Feeder%2520-1746699797994.png&w=3840&q=75/photo-1589924691995-400dc9ecc119?w=500&q=80",
     badge: "BEST SELLER", 
     features: ["AI Powered", "Schedule", "Portion Control"], 
@@ -27,7 +25,7 @@ export const PRODUCTS = [
     id: 3, 
     name: "PetPace Smart Collar", 
     description: "Health monitoring collar with vital signs tracking", 
-    price: 199, 
+    price: 29, 
     image: "https://images.unsplash.com/photo-1559190394-df5a28aab5c5?w=500&q=80",
     badge: "TOP RATED", 
     features: ["Heart Rate", "Activity", "Temperature"], 
@@ -38,7 +36,7 @@ export const PRODUCTS = [
     id: 4, 
     name: "Self-Cleaning Litter Box", 
     description: "Automatic litter box with odor control", 
-    price: 249, 
+    price: 200, 
     image: "https://images.unsplash.com/photo-1568049166823-286d562bc3e4?w=500&q=80",
     badge: "PREMIUM", 
     features: ["Auto Clean", "App Control", "Odor Control"], 
@@ -49,7 +47,7 @@ export const PRODUCTS = [
     id: 5, 
     name: "Interactive Ball Launcher", 
     description: "Automatic ball thrower for endless play", 
-    price: 129, 
+    price: 60, 
     image: "https://images.unsplash.com/photo-1623384646149-7f4c9ab3deb9?w=500&q=80",
     badge: "FUN PICK", 
     features: ["Auto Launch", "Remote", "Adjustable"], 
@@ -60,7 +58,7 @@ export const PRODUCTS = [
     id: 6, 
     name: "Fi Smart Dog Collar", 
     description: "Advanced GPS and activity tracking collar", 
-    price: 149, 
+    price: 49, 
     image: "https://images.unsplash.com/photo-1517849845537-4d2579024544?w=500&q=80",
     badge: "BEST VALUE", 
     features: ["GPS", "Fitness", "Long Battery"], 
@@ -90,7 +88,6 @@ export const PRODUCTS = [
     category: "tracking" 
   },
 
-  // Additional Products (5)
   {
     id: 9,
     name: 'Smart Water Fountain',
@@ -105,7 +102,7 @@ export const PRODUCTS = [
   {
     id: 10,
     name: 'Smart Pet Door',
-    price: 249,
+    price: 99,
     category: 'access',
     image: 'https://images.unsplash.com/photo-1560114928-40f1f1eb26a0?w=500&q=80',
     description: 'Microchip-activated door with app control and scheduling.',

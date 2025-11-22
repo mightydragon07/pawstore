@@ -1,4 +1,3 @@
-// components/Chatbox.jsx
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Send, Minimize2, Maximize2, MessageCircle } from 'lucide-react';

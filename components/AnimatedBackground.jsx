@@ -1,4 +1,4 @@
-// components/AnimatedBackground.jsx - ENHANCED VERSION
+// components/AnimatedBackground.jsx 
 "use client";
 import React from 'react';
 

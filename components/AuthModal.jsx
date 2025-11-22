@@ -1,4 +1,3 @@
-// components/AuthModal.jsx - WITH FIREBASE AUTHENTICATION AND EMAIL VERIFICATION
 "use client";
 import React, { useState } from 'react';
 import { X, User, Lock, Mail } from 'lucide-react';
@@ -8,7 +7,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   reload 
-} from 'firebase/auth'; // Added 'reload' for checking email verification status
+} from 'firebase/auth'; 
 import { auth, googleProvider } from '@/lib/firebase';
 
 export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
@@ -19,7 +18,6 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  // State for tracking if a verification email has been sent in the current session
   const [verificationSent, setVerificationSent] = useState(false); 
 
   if (!isOpen) return null;
@@ -55,15 +53,12 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
       let userCredential;
       
       if (isLogin) {
-        // --- 1. Sign In Logic with Email Verification Check ---
         userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Force a reload to get the latest emailVerified status
         await reload(user);
         
         if (user.emailVerified) {
-          // User is signed in and email is verified
           onLogin({
             uid: user.uid,
             email: user.email,
@@ -72,30 +67,23 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
           });
           closeAuth();
         } else {
-          // User is signed in but email is NOT verified
           setError('Please verify your email address to sign in. A verification link was sent upon registration.');
           
-          // Optionally allow the user to resend the verification email
           if (!verificationSent) {
             await sendEmailVerification(user);
             setVerificationSent(true);
             setError('Please verify your email address to sign in. A new verification link has been sent.');
           }
-          // The sign-in was technically successful, but we prevent closing the modal and set an error
-          // to prompt the user to verify. The user state is still logged in *client-side* until they log out 
-          // or refresh, but they cannot proceed with the app flow.
-          auth.signOut(); // Log out the unverified user for security/clarity
+          
+          auth.signOut(); 
         }
       } else {
-        // --- 2. Sign Up Logic with Email Verification Send ---
         userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Send email verification right after account creation
         await sendEmailVerification(user);
         setVerificationSent(true);
 
-        // Create user document via server API (include full name when provided)
         try {
           const token = await user.getIdToken();
           await fetch(`/api/users/${user.uid}`, {
@@ -111,14 +99,12 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
           console.error('Failed to create user document via API:', err);
         }
 
-        // Log out the user immediately after sign-up to enforce verification on next login
         await auth.signOut();
 
-        // Inform the user to check their email
         setError('Account created successfully! Please check your email inbox to **verify your address** before signing in.');
-        setIsLogin(true); // Switch to login view for next step
-        setEmail(user.email); // Keep email pre-filled
-        setPassword(''); // Clear password
+        setIsLogin(true); 
+        setEmail(user.email); 
+        setPassword(''); 
           setFullName('');
           setConfirmPassword('');
       }
@@ -127,7 +113,7 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
     } catch (error) {
       console.error('Authentication error:', error);
       
-      // User-friendly error messages
+      
       switch (error.code) {
         case 'auth/user-not-found':
           setError('No account found with this email.');
@@ -156,15 +142,14 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
   };
 
   const handleGoogleSignIn = async () => {
-    // Google sign-in handles verification automatically for Google accounts, 
-    // so no changes are strictly needed here.
+   
     setIsLoading(true);
     setError('');
     
     try {
       const result = await signInWithPopup(auth, googleProvider);
       
-      // Create/update user document via server API
+      
       try {
         const token = await result.user.getIdToken();
         await fetch(`/api/users/${result.user.uid}`, {

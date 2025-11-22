@@ -1,4 +1,3 @@
-// components/ProductCard.jsx
 "use client";
 import React, { useState } from 'react';
 import { Heart, ShoppingCart, Star } from 'lucide-react';

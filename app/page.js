@@ -1,4 +1,3 @@
-// app/page.js - WITH FIREBASE BACKEND
 "use client";
 import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -34,12 +33,10 @@ export default function Home() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  // Ensure the loading screen is visible for at least a minimum duration
   const [authReady, setAuthReady] = useState(false);
   const [minLoadingDone, setMinLoadingDone] = useState(false);
-  const MIN_LOADING_MS = 3000; // extend viewing time (ms)
+  const MIN_LOADING_MS = 3000; 
 
-  // Listen to authentication state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
@@ -51,7 +48,6 @@ export default function Home() {
         };
         setUser(userData);
 
-        // Load user's cart, wishlist, and orders from server APIs
         try {
           const idToken = await firebaseUser.getIdToken();
 
@@ -77,15 +73,12 @@ export default function Home() {
         setWishlist([]);
         setOrders([]);
       }
-      // mark auth work as finished; actual hiding of the loading
-      // screen will wait until the minimum display time has passed
       setAuthReady(true);
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Load products from Firebase (optional)
   useEffect(() => {
     const loadProducts = async () => {
       try {
@@ -95,7 +88,6 @@ export default function Home() {
         if (firebaseProducts.length > 0) {
           setProducts(firebaseProducts);
         } else {
-          // Leave local product list as fallback; server-side initialization is admin-only
           console.log('No products in Firebase, using local product list');
           setProducts(PRODUCTS);
         }
@@ -108,20 +100,17 @@ export default function Home() {
     loadProducts();
   }, []);
 
-  // Minimum loading timer - keep loading screen visible for at least MIN_LOADING_MS
   useEffect(() => {
     const timer = setTimeout(() => setMinLoadingDone(true), MIN_LOADING_MS);
     return () => clearTimeout(timer);
   }, []);
 
-  // When both auth initialization and minimum loading time are done, hide the loading screen
   useEffect(() => {
     if (authReady && minLoadingDone) {
       setIsLoading(false);
     }
   }, [authReady, minLoadingDone]);
 
-  // Save cart to Firebase whenever it changes
   useEffect(() => {
     if (user && cartItems.length >= 0) {
       (async () => {
@@ -139,7 +128,6 @@ export default function Home() {
     }
   }, [cartItems, user]);
 
-  // Save wishlist to Firebase whenever it changes
   useEffect(() => {
     if (user && wishlist.length >= 0) {
       (async () => {
@@ -201,15 +189,12 @@ export default function Home() {
       const json = await res.json();
       const orderId = json.id;
 
-      // Reload orders from server
       const ordersRes = await fetch(`/api/orders?userId=${user.uid}`, { headers: { Authorization: `Bearer ${token}` } });
       const ordersJson = await ordersRes.json();
       setOrders(ordersJson.orders || []);
       
-      // Clear cart
       setCartItems([]);
       
-      // Navigate to orders page
       setCurrentPage('orders');
       
       alert('Order placed successfully!');

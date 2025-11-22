@@ -1,4 +1,3 @@
-// components/ProfilePage.jsx
 import React, { useState } from 'react';
 import { User, Mail, LogOut, Package, Settings, Edit, CheckCircle, Phone, MapPin } from 'lucide-react';
 

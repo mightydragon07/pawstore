@@ -1,4 +1,3 @@
-// components/ProductsPage.jsx
 import React, { useState } from 'react';
 import { ProductCard } from '@/components/ProductCard';
 import { Filter, Grid, List } from 'lucide-react';

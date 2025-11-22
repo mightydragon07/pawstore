@@ -1,4 +1,3 @@
-// components/SupportPage.jsx
 import React, { useState } from 'react';
 import { MessageCircle, Mail, Phone, Search, ChevronDown, HelpCircle } from 'lucide-react';
 

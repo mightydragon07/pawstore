@@ -1,4 +1,3 @@
-// components/Hero.jsx
 "use client";
 import React from 'react';
 import { ChevronRight, Zap, Shield, Award } from 'lucide-react';

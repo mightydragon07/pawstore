@@ -1,4 +1,3 @@
-// components/Header.jsx
 "use client";
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Menu, X, Heart, User, Package } from 'lucide-react';

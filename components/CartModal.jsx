@@ -1,4 +1,3 @@
-// components/CartModal.jsx
 "use client";
 import React from 'react';
 import { X, Plus, Minus, Trash2, ShoppingCart, ArrowRight } from 'lucide-react';
