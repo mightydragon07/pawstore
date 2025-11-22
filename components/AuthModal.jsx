@@ -15,6 +15,8 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   // State for tracking if a verification email has been sent in the current session
@@ -26,7 +28,7 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
     e.preventDefault();
     setError('');
 
-    if (!email || !password) {
+    if (!email || !password || (!isLogin && !fullName)) {
       setError('Please fill in all fields.');
       return;
     }
@@ -34,6 +36,17 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
     if (password.length < 6) {
       setError('Password must be at least 6 characters.');
       return;
+    }
+
+    if (!isLogin) {
+      if (!confirmPassword) {
+        setError('Please confirm your password.');
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError('Passwords do not match.');
+        return;
+      }
     }
 
     setIsLoading(true);
@@ -82,7 +95,7 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
         await sendEmailVerification(user);
         setVerificationSent(true);
 
-        // Create user document via server API
+        // Create user document via server API (include full name when provided)
         try {
           const token = await user.getIdToken();
           await fetch(`/api/users/${user.uid}`, {
@@ -90,7 +103,7 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify({
               email: user.email,
-              name: email.split('@')[0],
+              name: fullName || email.split('@')[0],
               createdAt: new Date().toISOString(),
             }),
           });
@@ -106,6 +119,8 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
         setIsLogin(true); // Switch to login view for next step
         setEmail(user.email); // Keep email pre-filled
         setPassword(''); // Clear password
+          setFullName('');
+          setConfirmPassword('');
       }
 
       
@@ -213,11 +228,24 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
             {isLogin ? 'Welcome Back!' : 'Join SmartPaws'}
           </h2>
           <p className="text-gray-400">
-            {isLogin ? 'Sign in to manage your pets and orders' : 'Create an account for smart pet care'}
+            {isLogin ? 'Sign in to manage your pets and orders' : 'Begin your smart pet journey'}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Full Name - only for sign up */}
+          {!isLogin && (
+            <div className="relative">
+              <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-400" />
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="w-full py-3 pl-12 pr-4 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              />
+            </div>
+          )}
           {/* Email Input */}
           <div className="relative">
             <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-400" />
@@ -243,6 +271,21 @@ export const AuthModal = ({ isOpen, closeAuth, onLogin }) => {
               required
             />
           </div>
+
+          {/* Confirm Password - only for sign up */}
+          {!isLogin && (
+            <div className="relative">
+              <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-400" />
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full py-3 pl-12 pr-4 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                required
+              />
+            </div>
+          )}
 
           {error && (
             <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl">
