@@ -126,7 +126,7 @@ export const Chatbox = () => {
                 </div>
                 <div>
                   <h3 className="text-white font-bold text-lg">Max</h3>
-                  <p className="text-white/80 text-xs">Golden Retriever Assistant 🐕</p>
+                  <p className="text-white/80 text-xs">Your Assistant 🐕</p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
@@ -188,7 +188,7 @@ export const Chatbox = () => {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Ask Max anything... 🐾"
+                      placeholder="Ask anything... 🐾"
                       className="flex-1 bg-slate-700 text-white px-4 py-3 rounded-xl border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400 text-sm"
                     />
                     <button
