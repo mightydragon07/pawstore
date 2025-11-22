@@ -5,7 +5,7 @@ import { ChevronRight, Zap, Shield, Award } from 'lucide-react';
 
 export const Hero = ({ setCurrentPage }) => {
   const features = [
-    { icon: Zap, title: 'AI-Powered', description: 'Smart automation for your pet' },
+    { icon: Zap, title: 'Fast Delivery', description: '3-7 days' },
     { icon: Shield, title: 'Secure & Safe', description: 'Trusted by thousands' },
     { icon: Award, title: 'Premium Quality', description: 'Best-in-class products' },
   ];
@@ -58,14 +58,14 @@ export const Hero = ({ setCurrentPage }) => {
 
           {/* Main Heading */}
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-            Advanced Technology
+            Where Intelligence
             <br />
-            <span className="text-blue-500">for Your Pet</span>
+            <span className="text-blue-500">Meets Affection</span>
           </h1>
 
           {/* Subheading */}
           <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Discover cutting-edge smart devices designed to keep your furry friend healthy, safe, and happy. From AI-powered feeders to GPS trackers.
+            Upgrade your pet care with sophisticated smart devices. We offer everything from automated feeding systems to reliable GPS trackers to keep your companion healthy and secure.
           </p>
 
           {/* CTA Buttons */}
