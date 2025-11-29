@@ -36,8 +36,8 @@ Live Demo: [[https://pawstore-rust.vercel.app](https://pawstore-rust.vercel.app/
 
 ## Tech Stack
 
-- **Framework**: Next.js 16 (App Router) with React 19
-- **Styling**: Tailwind CSS v4 + custom animations
+- **Framework**: Next.js (App Router) with React 
+- **Styling**: Tailwind CSS + custom animations
 - **Authentication & Backend**: Firebase Auth + Firestore + Storage
 - **Icons**: Lucide React
 - **Deployment**: Vercel 
