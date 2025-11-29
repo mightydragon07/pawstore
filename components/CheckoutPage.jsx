@@ -2,15 +2,15 @@
 import React, { useState } from 'react';
 import { Package, CreditCard, CheckCircle, ArrowRight, User, MapPin, DollarSign, Truck, Lock, HardDriveDownload } from 'lucide-react';
 
-export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) => {
+export const CheckoutPage = ({ cartItems = [], user, placeOrder, setCurrentPage }) => {
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [shippingInfo, setShippingInfo] = useState({
-    name: user?.name || '',
-    address: '123 Smart Pet Lane',
-    city: 'Techville',
-    zip: '90210',
-    phone: '+1 (555) 123-4567',
+    name: '',
+    address: '',
+    city: '',
+    zip: '',
+    phone: '',
   });
   const [paymentInfo, setPaymentInfo] = useState({
     cardholder: '',
@@ -68,8 +68,7 @@ export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) =>
                   type="text" 
                   value={shippingInfo.name}
                   onChange={(e) => setShippingInfo({...shippingInfo, name: e.target.value})}
-                  className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  placeholder="John Doe"
+                  className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -79,8 +78,7 @@ export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) =>
                   type="tel" 
                   value={shippingInfo.phone}
                   onChange={(e) => setShippingInfo({...shippingInfo, phone: e.target.value})}
-                  className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  placeholder="+1 (555) 123-4567"
+                  className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -90,8 +88,7 @@ export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) =>
                   type="text" 
                   value={shippingInfo.address}
                   onChange={(e) => setShippingInfo({...shippingInfo, address: e.target.value})}
-                  className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  placeholder="123 Main Street"
+                  className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -102,8 +99,7 @@ export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) =>
                     type="text" 
                     value={shippingInfo.city}
                     onChange={(e) => setShippingInfo({...shippingInfo, city: e.target.value})}
-                    className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    placeholder="San Francisco"
+                    className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                 </div>
                 <div>
@@ -112,8 +108,7 @@ export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) =>
                     type="text" 
                     value={shippingInfo.zip}
                     onChange={(e) => setShippingInfo({...shippingInfo, zip: e.target.value})}
-                    className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    placeholder="94102"
+                    className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
@@ -178,8 +173,7 @@ export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) =>
                     type="text" 
                     value={paymentInfo.cardholder}
                     onChange={(e) => setPaymentInfo({...paymentInfo, cardholder: e.target.value})}
-                    className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    placeholder="John Doe"
+                    className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                 </div>
                 <div>
@@ -188,8 +182,7 @@ export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) =>
                     type="text" 
                     value={paymentInfo.cardNumber}
                     onChange={(e) => setPaymentInfo({...paymentInfo, cardNumber: e.target.value})}
-                    className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    placeholder="1234 5678 9012 3456"
+                    className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -199,8 +192,7 @@ export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) =>
                       type="text" 
                       value={paymentInfo.expiry}
                       onChange={(e) => setPaymentInfo({...paymentInfo, expiry: e.target.value})}
-                      className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      placeholder="MM/YY"
+                      className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                   </div>
                   <div>
@@ -209,8 +201,7 @@ export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) =>
                       type="text" 
                       value={paymentInfo.cvc}
                       onChange={(e) => setPaymentInfo({...paymentInfo, cvc: e.target.value})}
-                      className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      placeholder="123"
+                      className="w-full py-3 px-4 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                   </div>
                 </div>
@@ -303,7 +294,7 @@ export const CheckoutPage = ({ cartItems, user, placeOrder, setCurrentPage }) =>
   };
 
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen py-12 bg-slate-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
