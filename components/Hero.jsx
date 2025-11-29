@@ -28,7 +28,7 @@ export const Hero = ({ setCurrentPage }) => {
               animationDuration: `${15 + Math.random() * 10}s`,
               animationDelay: `${Math.random() * 5}s`,
               filter: `drop-shadow(0 4px 10px rgba(59, 130, 246, 0.5))`,
-              opacity: 0.15,
+              opacity: 0.25,
               color: i % 2 === 0 ? '#3b82f6' : '#60a5fa',
             }}
           >
@@ -38,7 +38,7 @@ export const Hero = ({ setCurrentPage }) => {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center relative z-10">
+      <div className="pb-20container mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
           {/* Badge */}
           <div className="inline-flex items-center px-4 py-2 mb-8 bg-blue-500/10 border border-blue-500/30 rounded-full backdrop-blur-sm">
